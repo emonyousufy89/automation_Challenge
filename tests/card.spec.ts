@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { validateHeaderValue } from "http";
 
 let deckId: string;
 
@@ -32,14 +33,49 @@ test("shuffle the deck", async ({ request }) => {
 
   console.log("after shuffle the deckid is: ", deckId2);
 
-  const drawResponse = await request.get(
+  const drawResponse1 = await request.get(
+    `https://deckofcardsapi.com/api/deck/${deckId2}/draw/?count=6`
+  );
+  let player1Cards = await drawResponse1.json();
+  // let cardValueOfPlayerOne: string = player1Cards.cards[0].value;
+  let cardValueOfPlayerOne: string[] = player1Cards.cards.map(
+    (card) => card.value
+  );
+
+  console.log("after draw the player 1 has :   ", player1Cards);
+  console.log("after draw the player 1 has VALUE :  ", cardValueOfPlayerOne);
+
+  const drawResponse2 = await request.get(
     `https://deckofcardsapi.com/api/deck/${deckId2}/draw/?count=3`
   );
-  let massa = await drawResponse.json();
+  let player2Cards = await drawResponse2.json();
 
-  let msg = await massa.success;
+  let cardValueOfPlayerTwo: string[] = player2Cards.cards.map(
+    (card) => card.value
+  );
 
-  console.log("after shuffle the deckid is: ", msg);
+  console.log("after draw the player 2 has :  ", player2Cards);
+  console.log("after draw the player 2 has VALUE : ", cardValueOfPlayerTwo);
+
+  if (
+    cardValueOfPlayerOne.includes("ACE") &&
+    cardValueOfPlayerOne.some((value) =>
+      ["10", "JACK", "QUEEN", "KING"].includes(value)
+    )
+  ) {
+    console.log("Player one has a blackjack!");
+  } else {
+    console.log("Player one does not have a blackjack.");
+  }
+
+  if (
+    cardValueOfPlayerTwo.includes("ACE") &&
+    cardValueOfPlayerTwo.some((value) =>
+      ["10", "JACK", "QUEEN", "KING"].includes(value)
+    )
+  ) {
+    console.log("Player Two has a blackjack!");
+  } else {
+    console.log("Player Two does not have a blackjack.");
+  }
 });
-
-// test("who has the back jack", async ({ page }) => {});
