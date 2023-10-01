@@ -10,6 +10,11 @@ test(" visit and check the site is up", async ({ page }) => {
 
   const pageTitle = await page.title();
   console.log(`Page Title: ${pageTitle}`);
+
+  await page.screenshot({
+    path:
+      ".test-results/" + Math.floor(Math.random() * 100000) + "screenshot.png",
+  });
 });
 
 test("get new deck", async ({ request }) => {

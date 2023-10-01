@@ -9,7 +9,13 @@ test("The card game", async () => {
   try {
     await page.goto("https://deckofcardsapi.com/");
 
-    await expect(page).toHaveTitle("Deck of Cards");
+    await expect(page).toHaveTitle("Deck of Cards API");
+    await page.screenshot({
+      path:
+        Math.floor(Math.random() * 100000) +
+        "/test-results/" +
+        "screenshot.png",
+    });
 
     // Get a new deck
     const deckResponse = await axios.get(
